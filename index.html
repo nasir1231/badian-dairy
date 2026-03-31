@@ -653,35 +653,6 @@ async function forceSync() {
     toast('⚠️ Sync failed — check your internet connection');
   }
 }
-      // First time — push local data to sheets
-      if (ST.suppliers.length) saveData();
-    }
-  } catch(err) {
-    setSaveStatus('local');
-    console.log('Sync error:', err);
-    toast('📱 Offline mode — showing local data');
-  }
-}
-
-async function forceSync() {
-  if (!SCRIPT_URL) { openSetup(); return; }
-  toast('🔄 Syncing from Google Sheets...');
-  setSaveStatus('loading');
-  try {
-    const url = SCRIPT_URL + '?action=read&t=' + Date.now();
-    const resp = await fetch(url, { method: 'GET', mode: 'cors' });
-    const text = await resp.text();
-    let result;
-    try { result = JSON.parse(text); } catch(e) { result = JSON.parse(JSON.parse(text)); }
-    if (result.status === 'ok' && result.data && result.data !== '{}') {
-      ST = JSON.parse(result.data);
-      localStorage.setItem('df3', result.data);
-      setSaveStatus('synced');
-      toast('✅ Sync complete!');
-      renderAll();
-    } else { setSaveStatus('synced'); toast('✅ Already up to date!'); }
-  } catch(err) { setSaveStatus('error'); toast('⚠️ Sync failed — check internet connection'); }
-}
 
 function setSaveStatus(s) {
   const el = document.getElementById('saveStatus'); if (!el) return;
