@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Badian Fresh Dairy Supply</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --cream:#FAF6EE;--cream2:#F0E8D4;--milk:#FFFDF7;
@@ -16,42 +15,44 @@
   --purple:#4A1A7A;--purple2:#7B4FB8;
   --border:#DDD0B8;--border2:#EDE0C8;
   --shadow:rgba(44,26,14,0.12);--shadow2:rgba(44,26,14,0.06);
+  --font-body:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
+  --font-mono:'Courier New',Courier,monospace;
+  --font-display:Georgia,'Times New Roman',serif;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown);min-height:100vh;font-size:14px;}
+body{font-family:var(--font-body);background:var(--cream);color:var(--brown);min-height:100vh;font-size:14px;}
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:var(--cream2);}
 ::-webkit-scrollbar-thumb{background:var(--brown3);border-radius:3px;}
 
 /* HEADER */
 header{background:linear-gradient(135deg,var(--brown) 0%,var(--brown2) 100%);color:var(--cream);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:58px;box-shadow:0 3px 16px var(--shadow);position:sticky;top:0;z-index:300;gap:10px;}
-.logo{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--caramel3);white-space:nowrap;}
-.logo small{display:block;font-family:'DM Sans',sans-serif;font-size:0.6rem;font-weight:300;color:#c8b89a;letter-spacing:2px;text-transform:uppercase;margin-top:-2px;}
+.logo{font-family:var(--font-display);font-size:1.3rem;color:var(--caramel3);white-space:nowrap;}
+.logo small{display:block;font-family:var(--font-body);font-size:0.6rem;font-weight:300;color:#c8b89a;letter-spacing:2px;text-transform:uppercase;margin-top:-2px;}
 .month-nav{display:flex;align-items:center;gap:6px;flex:1;justify-content:center;}
 .mnbtn{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:7px;width:28px;height:28px;font-size:1rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;}
 .mnbtn:hover{background:var(--caramel);}
-#monthLabel{font-family:'DM Mono',monospace;font-size:0.85rem;color:var(--caramel3);min-width:110px;text-align:center;background:rgba(255,255,255,0.08);padding:5px 10px;border-radius:7px;}
-.hbtn{border:none;border-radius:8px;padding:6px 13px;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all .18s;white-space:nowrap;}
+#monthLabel{font-family:var(--font-mono);font-size:0.85rem;color:var(--caramel3);min-width:110px;text-align:center;background:rgba(255,255,255,0.08);padding:5px 10px;border-radius:7px;}
+.hbtn{border:none;border-radius:8px;padding:6px 13px;font-family:var(--font-body);font-size:0.78rem;font-weight:600;cursor:pointer;transition:all .18s;white-space:nowrap;}
 .hbtn-green{background:var(--green2);color:#fff;}.hbtn-green:hover{background:var(--green3);}
 .hbtn-outline{background:transparent;border:1.5px solid rgba(255,255,255,0.25);color:#fff;}.hbtn-outline:hover{background:rgba(255,255,255,0.1);}
 
 /* NAV */
 nav{background:var(--brown2);display:flex;overflow-x:auto;padding:0 16px;scrollbar-width:none;border-bottom:2px solid rgba(0,0,0,0.2);}
 nav::-webkit-scrollbar{display:none;}
-.tab{background:none;border:none;color:#c0a88a;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:500;padding:10px 14px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .2s;margin-bottom:-2px;}
+.tab{background:none;border:none;color:#c0a88a;font-family:var(--font-body);font-size:0.78rem;font-weight:500;padding:10px 14px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .2s;margin-bottom:-2px;}
 .tab:hover{color:#fff;}.tab.active{color:var(--caramel3);border-bottom-color:var(--caramel3);background:rgba(255,255,255,0.04);}
 
 /* MAIN */
 main{padding:16px;max-width:1500px;margin:0 auto;}
-.sec{display:none;animation:fadeIn .22s ease;}.sec.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.sec{display:none;}.sec.active{display:block;}
 .sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
-.sec-title{font-family:'Playfair Display',serif;font-size:1.25rem;color:var(--brown);}
+.sec-title{font-family:var(--font-display);font-size:1.25rem;color:var(--brown);}
 .sec-title span{color:var(--caramel);}
 .btn-row{display:flex;gap:7px;flex-wrap:wrap;}
 
 /* BUTTONS */
-.btn{border:none;border-radius:8px;padding:7px 14px;font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all .18s;white-space:nowrap;}
+.btn{border:none;border-radius:8px;padding:7px 14px;font-family:var(--font-body);font-size:0.8rem;font-weight:600;cursor:pointer;transition:all .18s;white-space:nowrap;}
 .btn-green{background:var(--green2);color:#fff;}.btn-green:hover{background:var(--green3);}
 .btn-caramel{background:var(--caramel);color:#fff;}.btn-caramel:hover{background:var(--caramel2);}
 .btn-red{background:var(--red2);color:#fff;}.btn-red:hover{background:var(--red3);}
@@ -66,7 +67,7 @@ main{padding:16px;max-width:1500px;margin:0 auto;}
 .card:hover{transform:translateY(-2px);box-shadow:0 5px 16px var(--shadow);}
 .card-icon{font-size:1.5rem;margin-bottom:6px;}
 .card-lbl{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--brown3);margin-bottom:3px;}
-.card-val{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;line-height:1;}
+.card-val{font-family:var(--font-display);font-size:1.6rem;font-weight:700;line-height:1;}
 .c-green{color:var(--green);}.c-red{color:var(--red2);}.c-caramel{color:var(--caramel);}.c-blue{color:var(--blue2);}.c-purple{color:var(--purple2);}
 .card-sub{font-size:0.7rem;color:var(--brown3);margin-top:3px;}
 
@@ -83,12 +84,12 @@ tbody tr{border-bottom:1px solid var(--border2);transition:background .12s;}
 tbody tr:last-child{border-bottom:none;}
 tbody tr:hover{background:var(--cream2);}
 td{padding:7px 11px;font-size:0.82rem;vertical-align:middle;}
-td.r{text-align:right;font-family:'DM Mono',monospace;}
+td.r{text-align:right;font-family:var(--font-mono);}
 td.green{color:var(--green);font-weight:600;}
 td.red{color:var(--red2);font-weight:600;}
 td.caramel{color:var(--caramel);font-weight:600;}
 td.blue{color:var(--blue2);font-weight:600;}
-td input,td select{background:transparent;border:1px solid transparent;border-radius:5px;padding:3px 6px;width:100%;font-family:'DM Mono',monospace;font-size:0.8rem;color:var(--brown);outline:none;transition:all .15s;}
+td input,td select{background:transparent;border:1px solid transparent;border-radius:5px;padding:3px 6px;width:100%;font-family:var(--font-mono);font-size:0.8rem;color:var(--brown);outline:none;transition:all .15s;}
 td input:focus,td select:focus{background:var(--cream);border-color:var(--caramel);}
 td input[type=number]{text-align:right;}
 td input[type=checkbox]{width:auto;}
@@ -106,7 +107,7 @@ tfoot td{padding:8px 11px;font-size:0.82rem;font-weight:700;border-top:2px solid
 .notice{background:#FFF8E8;border:1.5px solid var(--caramel3);border-radius:9px;padding:9px 13px;font-size:0.8rem;color:var(--brown2);margin-bottom:14px;display:flex;align-items:center;gap:7px;}
 
 /* SEARCH */
-.search-box{background:var(--milk);border:1.5px solid var(--border);border-radius:7px;padding:5px 10px;font-family:'DM Sans',sans-serif;font-size:0.8rem;color:var(--brown);outline:none;width:150px;transition:border-color .2s;}
+.search-box{background:var(--milk);border:1.5px solid var(--border);border-radius:7px;padding:5px 10px;font-family:var(--font-body);font-size:0.8rem;color:var(--brown);outline:none;width:150px;transition:border-color .2s;}
 .search-box:focus{border-color:var(--caramel);}
 
 /* MODAL */
@@ -114,23 +115,23 @@ tfoot td{padding:8px 11px;font-size:0.82rem;font-weight:700;border-top:2px solid
 .modal-bg.open{display:flex;}
 .modal{background:var(--milk);border-radius:16px;padding:24px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(44,26,14,0.3);animation:popIn .22s ease;}
 @keyframes popIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
-.modal-title{font-family:'Playfair Display',serif;font-size:1.15rem;margin-bottom:16px;color:var(--brown);}
+.modal-title{font-family:var(--font-display);font-size:1.15rem;margin-bottom:16px;color:var(--brown);}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .fg{display:flex;flex-direction:column;gap:4px;}
 .fg.full{grid-column:1/-1;}
 label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:var(--brown3);}
-.fi{background:var(--cream);border:1.5px solid var(--border);border-radius:8px;padding:7px 11px;font-family:'DM Sans',sans-serif;font-size:0.86rem;color:var(--brown);outline:none;transition:border-color .2s;width:100%;}
+.fi{background:var(--cream);border:1.5px solid var(--border);border-radius:8px;padding:7px 11px;font-family:var(--font-body);font-size:0.86rem;color:var(--brown);outline:none;transition:border-color .2s;width:100%;}
 .fi:focus{border-color:var(--caramel);}
 .modal-actions{display:flex;gap:8px;margin-top:18px;justify-content:flex-end;}
 
 /* DETAIL MODAL (profile view) */
 .profile-hdr{display:flex;align-items:center;gap:14px;margin-bottom:18px;padding-bottom:14px;border-bottom:2px solid var(--border2);}
 .profile-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:var(--caramel3);flex-shrink:0;}
-.profile-name{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--brown);}
+.profile-name{font-family:var(--font-display);font-size:1.1rem;color:var(--brown);}
 .profile-sub{font-size:0.75rem;color:var(--brown3);}
 .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
 .stat-box{background:var(--cream2);border-radius:9px;padding:10px;text-align:center;}
-.stat-box .val{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;}
+.stat-box .val{font-family:var(--font-display);font-size:1.1rem;font-weight:700;}
 .stat-box .lbl{font-size:0.65rem;color:var(--brown3);text-transform:uppercase;letter-spacing:.8px;}
 
 /* PAYMENT LOG */
@@ -143,7 +144,7 @@ label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:
 #printArea{display:none;}
 @media print{
   body>*{display:none!important;}
-  #printArea{display:block!important;font-family:'DM Sans',sans-serif;max-width:700px;margin:0 auto;padding:20px;}
+  #printArea{display:block!important;font-family:var(--font-body);max-width:700px;margin:0 auto;padding:20px;}
   .print-header{text-align:center;margin-bottom:20px;border-bottom:2px solid #333;padding-bottom:12px;}
   .print-title{font-size:1.4rem;font-weight:700;}
   .print-sub{font-size:.85rem;color:#666;}
@@ -175,13 +176,13 @@ label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:
 .reg-table th.bill-col{background:rgba(26,94,58,0.7);color:#a8f0c8;}
 .reg-table td{padding:3px 2px;border-right:1px solid var(--border2);border-bottom:1px solid var(--border2);text-align:center;vertical-align:middle;}
 .reg-table td.name-col{text-align:left;padding-left:10px;font-weight:600;background:var(--milk);position:sticky;left:0;z-index:5;white-space:nowrap;min-width:130px;border-right:2px solid var(--border);}
-.reg-table td.rate-col{background:#FFF8E8;font-family:'DM Mono',monospace;font-weight:600;color:var(--caramel);font-size:0.75rem;}
-.reg-table td.total-col{background:#EEF8F2;font-family:'DM Mono',monospace;font-weight:700;color:var(--green);font-size:0.78rem;}
-.reg-table td.bill-col{background:#E8F5EE;font-family:'DM Mono',monospace;font-weight:700;color:var(--green);font-size:0.78rem;}
-.reg-table td.day-total{background:var(--cream2);font-family:'DM Mono',monospace;font-weight:700;color:var(--brown2);font-size:0.75rem;}
+.reg-table td.rate-col{background:#FFF8E8;font-family:var(--font-mono);font-weight:600;color:var(--caramel);font-size:0.75rem;}
+.reg-table td.total-col{background:#EEF8F2;font-family:var(--font-mono);font-weight:700;color:var(--green);font-size:0.78rem;}
+.reg-table td.bill-col{background:#E8F5EE;font-family:var(--font-mono);font-weight:700;color:var(--green);font-size:0.78rem;}
+.reg-table td.day-total{background:var(--cream2);font-family:var(--font-mono);font-weight:700;color:var(--brown2);font-size:0.75rem;}
 .reg-table td.today-col{background:#FFFBEE!important;}
 .reg-table th.today-col{background:rgba(255,200,90,0.4)!important;color:#fff;}
-.reg-input{width:36px;border:1px solid transparent;background:transparent;text-align:center;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--brown);outline:none;border-radius:3px;padding:2px 1px;}
+.reg-input{width:36px;border:1px solid transparent;background:transparent;text-align:center;font-family:var(--font-mono);font-size:0.75rem;color:var(--brown);outline:none;border-radius:3px;padding:2px 1px;}
 .reg-input:focus{background:var(--cream);border-color:var(--caramel);width:42px;}
 .reg-input.has-val{color:var(--brown);font-weight:600;}
 .reg-table tfoot td{background:var(--cream2);font-weight:700;border-top:2px solid var(--border);padding:5px 4px;font-size:0.75rem;}
@@ -197,14 +198,14 @@ label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:
 /* LOCK SCREEN */
 .lock-screen{position:fixed;inset:0;background:linear-gradient(135deg,var(--brown) 0%,#1a0a00 100%);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:20px;}
 .lock-card{background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,200,90,0.2);border-radius:24px;padding:36px 28px;max-width:340px;width:100%;text-align:center;backdrop-filter:blur(10px);}
-.lock-logo{font-family:'Playfair Display',serif;font-size:2rem;color:var(--caramel3);margin-bottom:4px;}
+.lock-logo{font-family:var(--font-display);font-size:2rem;color:var(--caramel3);margin-bottom:4px;}
 .lock-sub{font-size:.72rem;color:#c8b89a;letter-spacing:2px;text-transform:uppercase;margin-bottom:28px;}
 .lock-label{font-size:.72rem;font-weight:700;color:#c8b89a;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
 .pin-dots{display:flex;justify-content:center;gap:12px;margin-bottom:20px;}
 .pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,200,90,0.4);background:transparent;transition:all .2s;}
 .pin-dot.filled{background:var(--caramel3);border-color:var(--caramel3);transform:scale(1.1);}
 .pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
-.pin-btn{background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.12);border-radius:14px;color:#fff;font-family:'DM Sans',sans-serif;font-size:1.3rem;font-weight:600;padding:16px;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;}
+.pin-btn{background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.12);border-radius:14px;color:#fff;font-family:var(--font-body);font-size:1.3rem;font-weight:600;padding:16px;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;}
 .pin-btn:hover,.pin-btn:active{background:rgba(255,200,90,0.2);border-color:var(--caramel3);color:var(--caramel3);}
 .pin-btn.del{font-size:1rem;color:#c8b89a;}
 .lock-error{color:var(--red3);font-size:.8rem;min-height:20px;margin-bottom:8px;animation:shake .3s ease;}
@@ -593,7 +594,8 @@ function getMD(key){
 
 function changeMonth(d){
   CM+=d; if(CM>11){CM=0;CY++;} if(CM<0){CM=11;CY--;}
-  updateLabels(); renderAll();
+  updateLabels();
+  renderAll(); // only renders active tab now
 }
 
 function updateLabels(){
@@ -606,15 +608,29 @@ function updateLabels(){
 }
 
 // ===================== TABS =====================
-function showTab(name,btn){
-  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+name).classList.add('active');
+const TAB_RENDER = {
+  'dashboard':      () => { renderDashboard(); },
+  'reg-sales':      () => { updateLabels(); renderRegister('sales'); },
+  'reg-purchases':  () => { updateLabels(); renderRegister('purchases'); },
+  'expenses':       () => { updateLabels(); renderExpenses(); },
+  'cash-sales':     () => { updateLabels(); renderCashSales(); },
+  'customers':      () => { renderCustomers(); },
+  'suppliers':      () => { renderSuppliers(); },
+  'receivables':    () => { updateLabels(); renderReceivables(); },
+  'payables':       () => { updateLabels(); renderPayables(); },
+  'summary':        () => { updateLabels(); renderSummary(); },
+  'purchases':      () => { updateLabels(); renderPurchases(); },
+  'sales':          () => { updateLabels(); renderSales(); },
+};
+
+function showTab(name, btn){
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
   if(btn) btn.classList.add('active');
-  if(name==='reg-purchases') renderRegister('purchases');
-  else if(name==='reg-sales') renderRegister('sales');
-  else if(name==='cash-sales') renderCashSales();
-  else renderAll();
+  // Only render the active tab
+  const fn = TAB_RENDER[name];
+  if(fn) fn();
 }
 
 // ===================== GOOGLE SHEETS CONFIG =====================
@@ -660,7 +676,7 @@ async function loadData() {
     if (result.status === 'ok' && result.data && result.data !== '{}') {
       ST = JSON.parse(result.data);
       localStorage.setItem('df3', result.data);
-      setSaveStatus('synced'); toast('☁️ Synced!'); renderAll();
+      setSaveStatus('synced'); toast('☁️ Synced!'); renderAllFull();
     } else { setSaveStatus('synced'); if (ST.suppliers.length) await saveData(); }
   } catch(err) { setSaveStatus('error'); console.log('Load error:', err); toast('⚠️ Sync failed — check ⚙️ Setup'); }
 }
@@ -673,7 +689,7 @@ async function forceSync() {
     const result = await resp.json();
     if (result.status === 'ok' && result.data && result.data !== '{}') {
       ST = JSON.parse(result.data); localStorage.setItem('df3', result.data);
-      setSaveStatus('synced'); toast('✅ Synced!'); renderAll();
+      setSaveStatus('synced'); toast('✅ Synced!'); renderAllFull();
     } else { setSaveStatus('synced'); toast('✅ Up to date!'); }
   } catch(err) { setSaveStatus('error'); toast('⚠️ Sync failed — check internet'); }
 }
@@ -721,14 +737,25 @@ function initSample() {
 }
 
 // ===================== RENDER ALL =====================
+// ===================== RENDER ALL =====================
 function renderAll(){
+  updateLabels();
+  // Only render the currently active tab for speed
+  const active = document.querySelector('.sec.active');
+  if(!active) { renderDashboard(); return; }
+  const name = active.id.replace('tab-','');
+  const fn = TAB_RENDER[name];
+  if(fn) fn();
+}
+
+// Full render — used only on initial load
+function renderAllFull(){
   updateLabels();
   renderSuppliers(); renderCustomers();
   renderPurchases(); renderSales();
   renderPayables(); renderReceivables();
   renderExpenses(); renderCashSales();
   renderDashboard(); renderSummary();
-  renderRegister('purchases'); renderRegister('sales');
 }
 
 // ===================== SUPPLIERS =====================
@@ -809,7 +836,7 @@ function renderPurchases(){
       <td><select onchange="upd('purchases',${i},'supplier',this.value);fillRate('purchases',${i},this.value)"><option value="">--Select--</option>${opts}</select></td>
       <td><input type="number" value="${p.qty||''}" min="0" step="0.1" placeholder="Kg" onchange="upd('purchases',${i},'qty',this.value);calcAmt('purchases',${i})"></td>
       <td><input type="number" value="${p.rate||''}" min="0" step="0.5" placeholder="Rs" onchange="upd('purchases',${i},'rate',this.value);calcAmt('purchases',${i})"></td>
-      <td class="r"><span id="pa${i}" style="font-family:'DM Mono',monospace;font-weight:700;color:var(--caramel)">Rs ${fmt(amt)}</span></td>
+      <td class="r"><span id="pa${i}" style="font-family:var(--font-mono);font-weight:700;color:var(--caramel)">Rs ${fmt(amt)}</span></td>
       <td><input type="checkbox" ${p.paid?'checked':''} onchange="upd('purchases',${i},'paid',this.checked)" style="width:auto"></td>
       <td><input type="text" value="${p.notes||''}" placeholder="Notes" onchange="upd('purchases',${i},'notes',this.value)"></td>
       <td><button onclick="delRow('purchases',${i})" style="background:none;border:none;cursor:pointer;color:var(--red2)">🗑</button></td>
@@ -835,7 +862,7 @@ function renderSales(){
       <td><select onchange="upd('sales',${i},'customer',this.value);fillRate('sales',${i},this.value)"><option value="">--Select--</option>${opts}</select></td>
       <td><input type="number" value="${s.qty||''}" min="0" step="0.1" placeholder="Kg" onchange="upd('sales',${i},'qty',this.value);calcAmt('sales',${i})"></td>
       <td><input type="number" value="${s.rate||''}" min="0" step="0.5" placeholder="Rs" onchange="upd('sales',${i},'rate',this.value);calcAmt('sales',${i})"></td>
-      <td class="r"><span id="sa${i}" style="font-family:'DM Mono',monospace;font-weight:700;color:var(--green)">Rs ${fmt(amt)}</span></td>
+      <td class="r"><span id="sa${i}" style="font-family:var(--font-mono);font-weight:700;color:var(--green)">Rs ${fmt(amt)}</span></td>
       <td><input type="checkbox" ${s.received?'checked':''} onchange="upd('sales',${i},'received',this.checked)" style="width:auto"></td>
       <td><input type="text" value="${s.notes||''}" placeholder="Notes" onchange="upd('sales',${i},'notes',this.value)"></td>
       <td><button onclick="delRow('sales',${i})" style="background:none;border:none;cursor:pointer;color:var(--red2)">🗑</button></td>
@@ -1019,7 +1046,7 @@ function openPayLog(type,name){
   document.getElementById('modalBody').innerHTML=`
     <div style="background:var(--cream2);border-radius:9px;padding:10px 14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;">
       <span style="font-size:.82rem;color:var(--brown3)">Current Balance</span>
-      <span style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--${balColor})">Rs ${fmt(balance)}</span>
+      <span style="font-family:var(--font-display);font-size:1.3rem;font-weight:700;color:var(--${balColor})">Rs ${fmt(balance)}</span>
     </div>
     <div style="margin-bottom:12px;">
       <div style="font-size:.78rem;font-weight:700;color:var(--brown3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;">Add New Payment</div>
@@ -1034,7 +1061,7 @@ function openPayLog(type,name){
     <div style="font-size:.78rem;font-weight:700;color:var(--brown3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">Payment History</div>
     <div class="pay-log">
       <div class="pay-log-row pay-log-hdr"><span>Date</span><span>Method</span><span style="text-align:right">Amount</span><span>Note</span></div>
-      ${payments.length?payments.slice().reverse().map(p=>`<div class="pay-log-row"><span>${p.date}</span><span><span class="badge b-blue">${p.method||'Cash'}</span></span><span style="text-align:right;font-family:'DM Mono',monospace;font-weight:700;color:var(--green)">Rs ${fmt(p.amount)}</span><span style="color:var(--brown3)">${p.note||''}</span></div>`).join(''):'<div style="text-align:center;padding:16px;color:var(--brown3);font-size:.82rem;">No payments yet</div>'}
+      ${payments.length?payments.slice().reverse().map(p=>`<div class="pay-log-row"><span>${p.date}</span><span><span class="badge b-blue">${p.method||'Cash'}</span></span><span style="text-align:right;font-family:var(--font-mono);font-weight:700;color:var(--green)">Rs ${fmt(p.amount)}</span><span style="color:var(--brown3)">${p.note||''}</span></div>`).join(''):'<div style="text-align:center;padding:16px;color:var(--brown3);font-size:.82rem;">No payments yet</div>'}
     </div>
   `;
   document.getElementById('modalActions').innerHTML=`<button class="btn btn-ghost" onclick="closeModal()">Close</button>`;
@@ -1243,12 +1270,12 @@ function viewProfile(type,idx){
     <div style="font-size:.75rem;font-weight:700;color:var(--brown3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">This Month Transactions</div>
     <div class="pay-log" style="margin-bottom:12px;">
       <div class="pay-log-row pay-log-hdr"><span>Date</span><span style="text-align:right">Qty (Kg)</span><span style="text-align:right">Amount</span><span>Paid?</span></div>
-      ${txList.length?txList.map(t=>`<div class="pay-log-row"><span>${t.date}</span><span style="text-align:right;font-family:'DM Mono'">${fmt(t.qty)}</span><span style="text-align:right;font-family:'DM Mono';font-weight:700;color:var(--caramel)">Rs ${fmt(t.amt)}</span><span>${t.paid?'<span class="badge b-green">✓ Yes</span>':'<span class="badge b-red">Pending</span>'}</span></div>`).join(''):'<div style="text-align:center;padding:12px;color:var(--brown3);font-size:.8rem">No transactions this month</div>'}
+      ${txList.length?txList.map(t=>`<div class="pay-log-row"><span>${t.date}</span><span style="text-align:right;font-family:var(--font-mono)">${fmt(t.qty)}</span><span style="text-align:right;font-family:var(--font-mono);font-weight:700;color:var(--caramel)">Rs ${fmt(t.amt)}</span><span>${t.paid?'<span class="badge b-green">✓ Yes</span>':'<span class="badge b-red">Pending</span>'}</span></div>`).join(''):'<div style="text-align:center;padding:12px;color:var(--brown3);font-size:.8rem">No transactions this month</div>'}
     </div>
     <div style="font-size:.75rem;font-weight:700;color:var(--brown3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">Payment History (This Month)</div>
     <div class="pay-log">
       <div class="pay-log-row pay-log-hdr"><span>Date</span><span>Method</span><span style="text-align:right">Amount</span><span>Note</span></div>
-      ${payments.length?payments.slice().reverse().map(p=>`<div class="pay-log-row"><span>${p.date}</span><span><span class="badge b-blue">${p.method}</span></span><span style="text-align:right;font-family:'DM Mono';font-weight:700;color:var(--green)">Rs ${fmt(p.amount)}</span><span style="color:var(--brown3)">${p.note||''}</span></div>`).join(''):'<div style="text-align:center;padding:12px;color:var(--brown3);font-size:.8rem">No payments recorded</div>'}
+      ${payments.length?payments.slice().reverse().map(p=>`<div class="pay-log-row"><span>${p.date}</span><span><span class="badge b-blue">${p.method}</span></span><span style="text-align:right;font-family:var(--font-mono);font-weight:700;color:var(--green)">Rs ${fmt(p.amount)}</span><span style="color:var(--brown3)">${p.note||''}</span></div>`).join(''):'<div style="text-align:center;padding:12px;color:var(--brown3);font-size:.8rem">No payments recorded</div>'}
     </div>
   `;
   document.getElementById('modalActions').innerHTML=`
@@ -1508,19 +1535,53 @@ function renderRegister(type){
   syncRegisterToLedger(type);
 }
 
+let _regTimer = null;
 function updateRegCell(type,name,day,val){
   const regData = getRegData(type);
   if(!regData[name]) regData[name]={};
   if(val===''||val===null) delete regData[name][day];
   else regData[name][day]=+val;
-  // Recalc row total inline
-  const entities = type==='purchases'?ST.suppliers:ST.customers;
-  const entity = entities.find(e=>e.name===name);
-  const rate = entity?+entity.rate||0:0;
-  const days = dim(CY,CM);
-  let rowTotal=0;
-  for(let d=1;d<=days;d++) rowTotal+=+(regData[name][d]||0);
   syncRegisterToLedger(type);
+  // Debounce — only recalc totals row after 400ms pause in typing
+  clearTimeout(_regTimer);
+  _regTimer = setTimeout(()=>{ updateRegTotalsOnly(type); }, 400);
+}
+
+function updateRegTotalsOnly(type){
+  const regData = getRegData(type);
+  const entities = type==='purchases'?ST.suppliers:ST.customers;
+  const days = dim(CY,CM);
+  const outerId = type==='purchases'?'reg-purch-outer':'reg-sales-outer';
+  const outer = document.getElementById(outerId);
+  if(!outer) return;
+  let grandQty=0, grandBill=0;
+  const dayTotals = new Array(days+1).fill(0);
+  entities.forEach(entity=>{
+    const name=entity.name; const rate=+entity.rate||0;
+    if(!regData[name]) return;
+    let rowTotal=0;
+    for(let d=1;d<=days;d++){ const v=+(regData[name][d]||0); rowTotal+=v; dayTotals[d]+=v; }
+    const rowBill=rowTotal*rate;
+    grandQty+=rowTotal; grandBill+=rowBill;
+    // Update row total/bill cells
+    const rows=outer.querySelectorAll('tbody tr');
+    rows.forEach(row=>{
+      const nameCell=row.querySelector('td.name-col');
+      if(nameCell&&nameCell.title===name){
+        const cells=row.querySelectorAll('td');
+        const totalCell=cells[cells.length-2]; const billCell=cells[cells.length-1];
+        if(totalCell) totalCell.innerHTML=`${fmt(rowTotal)}<br><span style="font-size:.6rem">Kg</span>`;
+        if(billCell) billCell.textContent=`Rs ${fmt(rowBill)}`;
+      }
+    });
+  });
+  // Update footer day totals
+  const footerCells=outer.querySelectorAll('tfoot td');
+  for(let d=1;d<=days;d++){
+    if(footerCells[d+1]) footerCells[d+1].textContent=dayTotals[d]>0?fmt(dayTotals[d]):'';
+  }
+  if(footerCells[days+2]) footerCells[days+2].innerHTML=`${fmt(grandQty)} Kg`;
+  if(footerCells[days+3]) footerCells[days+3].textContent=`Rs ${fmt(grandBill)}`;
 }
 
 function syncRegisterToLedger(type){
@@ -1623,7 +1684,7 @@ function checkPin() {
     document.getElementById('lockScreen').style.transition = 'opacity .3s';
     setTimeout(() => {
       document.getElementById('lockScreen').style.display = 'none';
-      loadData().then(() => renderAll());
+      loadData().then(() => renderAllFull());
     }, 300);
     pinAttempts = 0;
   } else {
@@ -1721,7 +1782,7 @@ function renderCashSales(){
       <td><input type="text" value="${c.desc||''}" placeholder="e.g. Full cream milk" onchange="updCS(${i},'desc',this.value)"></td>
       <td><input type="number" value="${c.qty||''}" min="0" step="0.1" placeholder="Kg" onchange="updCS(${i},'qty',this.value);calcCSAmt(${i})"></td>
       <td><input type="number" value="${c.rate||''}" min="0" step="0.5" placeholder="Rs" onchange="updCS(${i},'rate',this.value);calcCSAmt(${i})"></td>
-      <td class="r"><span id="csa${i}" style="font-family:'DM Mono',monospace;font-weight:700;color:var(--green)">Rs ${fmt(amt)}</span></td>
+      <td class="r"><span id="csa${i}" style="font-family:var(--font-mono);font-weight:700;color:var(--green)">Rs ${fmt(amt)}</span></td>
       <td><input type="checkbox" ${c.received?'checked':''} onchange="updCS(${i},'received',this.checked)" style="width:auto"></td>
       <td><input type="text" value="${c.notes||''}" placeholder="Notes" onchange="updCS(${i},'notes',this.value)"></td>
       <td><button onclick="delCSRow(${i})" style="background:none;border:none;cursor:pointer;color:var(--red2)">🗑</button></td>
@@ -1749,10 +1810,11 @@ function addCashSaleRow(){
 function delCSRow(i){ const md=getMD(ck()); md.cashSales.splice(i,1); renderCashSales(); }
 
 // ===================== INIT =====================
-// App loads after PIN — see checkPin() above
-// Show hint only if using default PIN
+let _saveTimer = null;
+function debouncedSave(){ clearTimeout(_saveTimer); _saveTimer = setTimeout(saveData, 2000); }
+
 if (getStoredPin() === DEFAULT_PIN) {
-  document.getElementById('lockHint').textContent = 'Default PIN: 1234  (change it after login)';
+  document.getElementById('lockHint').textContent = 'Default PIN: 1234  (change after login)';
 } else {
   document.getElementById('lockHint').textContent = '';
 }
