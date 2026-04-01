@@ -211,6 +211,62 @@ label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .lock-hint{font-size:.7rem;color:rgba(255,255,255,0.3);margin-top:12px;}
 .change-pin-link{font-size:.72rem;color:var(--caramel2);cursor:pointer;text-decoration:underline;margin-top:8px;display:inline-block;}
+
+/* ===== MOBILE RESPONSIVE ===== */
+@media(max-width:768px){
+  header{height:auto;padding:8px 12px;flex-wrap:wrap;gap:6px;}
+  .logo{font-size:1rem;}
+  .logo small{font-size:0.55rem;}
+  .month-nav{order:3;width:100%;justify-content:center;padding:4px 0;}
+  #monthLabel{font-size:0.8rem;min-width:95px;}
+  .hbtn{padding:5px 9px;font-size:0.7rem;}
+  nav{padding:0 6px;}
+  .tab{padding:9px 9px;font-size:0.7rem;}
+  main{padding:8px 6px;}
+  .cards{grid-template-columns:repeat(2,1fr);gap:8px;}
+  .card{padding:11px 10px;}
+  .card-icon{font-size:1.2rem;margin-bottom:3px;}
+  .card-val{font-size:1.3rem;}
+  .card-lbl{font-size:0.6rem;}
+  .card-sub{font-size:0.63rem;}
+  .sec-hdr{margin-bottom:10px;flex-direction:column;align-items:flex-start;}
+  .sec-title{font-size:1rem;}
+  .btn-row{gap:5px;width:100%;}
+  .btn{padding:7px 10px;font-size:0.75rem;flex:1;justify-content:center;text-align:center;}
+  .btn-sm{flex:none;padding:5px 9px;font-size:0.7rem;}
+  .tbl-bar{padding:8px 10px;}
+  .tbl-bar-title{font-size:0.78rem;}
+  table{font-size:0.76rem;}
+  th{padding:7px 6px;font-size:0.6rem;letter-spacing:0;}
+  td{padding:6px 6px;}
+  td input,td select{font-size:0.76rem;padding:3px 3px;}
+  .form-grid{grid-template-columns:1fr;}
+  .stat-row{grid-template-columns:repeat(2,1fr);gap:8px;}
+  .modal{padding:16px 14px;}
+  .modal-title{font-size:1rem;margin-bottom:12px;}
+  .notice{font-size:0.73rem;padding:7px 10px;}
+  .reg-input{width:30px;font-size:0.68rem;}
+  .reg-table th,.reg-table td{padding:3px 2px;}
+  .reg-table th{font-size:0.58rem;}
+  .reg-table td.name-col{min-width:80px;font-size:0.7rem;}
+  .lock-card{padding:28px 20px;}
+  .lock-logo{font-size:1.5rem;}
+  .pin-btn{padding:15px 10px;font-size:1.2rem;border-radius:12px;}
+  .pin-pad{gap:8px;}
+  .pay-log-row{grid-template-columns:75px 70px auto;font-size:0.7rem;}
+  .pay-log-row>span:nth-child(4){display:none;}
+  .stat-box .val{font-size:0.9rem;}
+  .stat-box .lbl{font-size:0.58rem;}
+  /* Action buttons in tables */
+  td[style*="white-space:nowrap"]{white-space:normal!important;}
+}
+@media(max-width:390px){
+  .cards{grid-template-columns:1fr 1fr;}
+  .card-val{font-size:1.1rem;}
+  .pin-btn{padding:13px 8px;font-size:1.05rem;}
+  th{padding:5px 4px;}
+  td{padding:5px 4px;}
+}
 </style>
 </head>
 <body>
@@ -568,31 +624,24 @@ let SCRIPT_URL = localStorage.getItem('df_script_url') || '';
 let _saving = false, _saveQueue = false;
 
 async function saveData() {
-  // Always save locally first
   try { localStorage.setItem('df3', JSON.stringify(ST)); } catch(e) {}
-
-  if (!SCRIPT_URL) {
-    toast('💾 Saved locally — tap ⚙️ Setup to connect Google Sheets');
-    return;
-  }
+  if (!SCRIPT_URL) { toast('💾 Saved locally — tap ⚙️ to connect Google Sheets'); return; }
   if (_saving) { _saveQueue = true; return; }
   _saving = true;
   setSaveStatus('saving');
   try {
-    // Send data as URL parameter in a GET request — most reliable cross-device method
-    const encoded = encodeURIComponent(JSON.stringify(ST));
-    const url = SCRIPT_URL + '?action=write&data=' + encoded;
-    const resp = await fetch(url, { method: 'GET', mode: 'cors' });
+    // POST with JSON body — handles large data properly
+    const resp = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'write', data: JSON.stringify(ST) })
+    });
     const result = await resp.json();
-    if (result.status === 'ok') {
-      setSaveStatus('saved');
-      toast('✅ Saved to Google Sheets!');
-    } else {
-      throw new Error(result.message || 'Save failed');
-    }
+    if (result.status === 'ok') { setSaveStatus('saved'); toast('✅ Saved to Google Sheets!'); }
+    else throw new Error(result.message);
   } catch(err) {
     setSaveStatus('error');
-    toast('⚠️ Cloud save failed — check internet & Script URL in ⚙️ Setup');
+    toast('⚠️ Cloud save failed — saved locally. Check ⚙️ Setup');
     console.log('Save error:', err);
   }
   _saving = false;
@@ -600,58 +649,33 @@ async function saveData() {
 }
 
 async function loadData() {
-  // Load localStorage instantly first (so app shows fast)
   try { const l = localStorage.getItem('df3'); if (l) ST = JSON.parse(l); } catch(e) {}
   if (!ST.suppliers) ST = { suppliers:[], customers:[], months:{} };
   if (!ST.suppliers.length) initSample();
-
   if (!SCRIPT_URL) { setSaveStatus('no-url'); return; }
-
   setSaveStatus('loading');
   try {
-    const url = SCRIPT_URL + '?action=read&t=' + Date.now();
-    const resp = await fetch(url, { method: 'GET', mode: 'cors' });
+    const resp = await fetch(SCRIPT_URL + '?action=read&t=' + Date.now(), { method: 'GET' });
     const result = await resp.json();
     if (result.status === 'ok' && result.data && result.data !== '{}') {
       ST = JSON.parse(result.data);
       localStorage.setItem('df3', result.data);
-      setSaveStatus('synced');
-      toast('☁️ Synced from Google Sheets!');
-      renderAll();
-    } else {
-      setSaveStatus('synced');
-      // First open — push local data up
-      if (ST.suppliers.length) await saveData();
-    }
-  } catch(err) {
-    setSaveStatus('error');
-    console.log('Load error:', err);
-    toast('⚠️ Could not sync — check Script URL in ⚙️ Setup');
-  }
+      setSaveStatus('synced'); toast('☁️ Synced!'); renderAll();
+    } else { setSaveStatus('synced'); if (ST.suppliers.length) await saveData(); }
+  } catch(err) { setSaveStatus('error'); console.log('Load error:', err); toast('⚠️ Sync failed — check ⚙️ Setup'); }
 }
 
 async function forceSync() {
   if (!SCRIPT_URL) { openSetup(); return; }
-  toast('🔄 Syncing...');
-  setSaveStatus('loading');
+  toast('🔄 Syncing...'); setSaveStatus('loading');
   try {
-    const url = SCRIPT_URL + '?action=read&t=' + Date.now();
-    const resp = await fetch(url, { method: 'GET', mode: 'cors' });
+    const resp = await fetch(SCRIPT_URL + '?action=read&t=' + Date.now(), { method: 'GET' });
     const result = await resp.json();
     if (result.status === 'ok' && result.data && result.data !== '{}') {
-      ST = JSON.parse(result.data);
-      localStorage.setItem('df3', result.data);
-      setSaveStatus('synced');
-      toast('✅ Sync complete!');
-      renderAll();
-    } else {
-      setSaveStatus('synced');
-      toast('✅ Already up to date!');
-    }
-  } catch(err) {
-    setSaveStatus('error');
-    toast('⚠️ Sync failed — check your internet connection');
-  }
+      ST = JSON.parse(result.data); localStorage.setItem('df3', result.data);
+      setSaveStatus('synced'); toast('✅ Synced!'); renderAll();
+    } else { setSaveStatus('synced'); toast('✅ Up to date!'); }
+  } catch(err) { setSaveStatus('error'); toast('⚠️ Sync failed — check internet'); }
 }
 
 function setSaveStatus(s) {
