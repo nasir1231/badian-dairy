@@ -143,25 +143,31 @@ label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:
 /* BILL PRINT */
 #printArea{display:none;}
 @media print{
+  @page{margin:10mm;size:A4;}
   body>*{display:none!important;}
-  #printArea{display:block!important;font-family:var(--font-body);max-width:700px;margin:0 auto;padding:20px;}
-  .print-header{text-align:center;margin-bottom:20px;border-bottom:2px solid #333;padding-bottom:12px;}
-  .print-title{font-size:1.4rem;font-weight:700;}
-  .print-sub{font-size:.85rem;color:#666;}
-  .print-info{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0;font-size:.85rem;}
-  .print-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.82rem;}
-  .print-table th{background:#f0f0f0;padding:7px 10px;text-align:left;border:1px solid #ccc;}
-  .print-table td{padding:6px 10px;border:1px solid #ddd;}
+  #printArea{display:block!important;font-family:Arial,sans-serif;max-width:100%;padding:0;}
+  /* Hide browser URL, header, footer */
+  html{-webkit-print-color-adjust:exact;}
+  .print-header{text-align:center;margin-bottom:10px;border-bottom:2px solid #333;padding-bottom:8px;}
+  .print-title{font-size:1.2rem;font-weight:700;}
+  .print-sub{font-size:.78rem;color:#666;}
+  .print-info{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0;font-size:.78rem;}
+  .print-table{width:100%;border-collapse:collapse;margin:8px 0;font-size:.72rem;}
+  .print-table th{background:#f0f0f0;padding:4px 7px;text-align:left;border:1px solid #ccc;font-size:.7rem;}
+  .print-table td{padding:3px 7px;border:1px solid #ddd;font-size:.72rem;}
   .print-table td.r,.print-table th.r{text-align:right;}
-  .print-totals{border-top:2px solid #333;margin-top:10px;}
-  .print-total-row{display:flex;justify-content:space-between;padding:4px 0;font-size:.88rem;}
-  .print-total-row.big{font-size:1rem;font-weight:700;border-top:1px solid #aaa;margin-top:4px;padding-top:6px;}
-  .print-footer{text-align:center;margin-top:20px;font-size:.75rem;color:#999;border-top:1px solid #ddd;padding-top:10px;}
-  .print-pay-log{margin-top:14px;}
-  .print-pay-log table{width:100%;border-collapse:collapse;font-size:.8rem;}
-  .print-pay-log th,.print-pay-log td{padding:5px 8px;border:1px solid #ddd;}
+  .print-totals{border-top:2px solid #333;margin-top:6px;}
+  .print-total-row{display:flex;justify-content:space-between;padding:2px 0;font-size:.8rem;}
+  .print-total-row.big{font-size:.9rem;font-weight:700;border-top:1px solid #aaa;margin-top:3px;padding-top:4px;}
+  .print-footer{text-align:center;margin-top:10px;font-size:.65rem;color:#999;border-top:1px solid #ddd;padding-top:6px;}
+  .print-pay-log{margin-top:8px;}
+  .print-pay-log table{width:100%;border-collapse:collapse;font-size:.7rem;}
+  .print-pay-log th,.print-pay-log td{padding:3px 6px;border:1px solid #ddd;}
   .print-pay-log th{background:#f5f5f5;}
   .no-print{display:none!important;}
+  /* Force single page */
+  #printArea{page-break-inside:avoid;}
+  tr{page-break-inside:avoid;}
 }
 
 /* EXPENSE */
@@ -307,7 +313,7 @@ label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:
   <div class="logo">🥛 Badian Fresh Dairy Supply<small>Fresh Dairy Management</small></div>
   <div class="month-nav">
     <button class="mnbtn" onclick="changeMonth(-1)">‹</button>
-    <div id="monthLabel">...</div>
+    <div id="monthLabel" onclick="openMonthPicker()" title="Tap to jump to any month" style="cursor:pointer;">...</div>
     <button class="mnbtn" onclick="changeMonth(1)">›</button>
   </div>
   <div style="display:flex;gap:6px;align-items:center;">
@@ -350,8 +356,15 @@ label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:
     </div>
   </div>
   <div class="notice">ℹ️ Click <b>View</b> on any supplier to see their full monthly transactions & payment history.</div>
+  <div class="notice" style="background:#E8F5EE;border-color:var(--green3);">💡 To change prices from this month onwards — click <b>Update Prices</b>. Old months keep their original rates.</div>
   <div class="tbl-wrap">
-    <div class="tbl-bar"><span class="tbl-bar-title">All Suppliers</span><span id="supCount" style="font-size:.75rem;color:var(--brown3);"></span></div>
+    <div class="tbl-bar">
+      <span class="tbl-bar-title">All Suppliers</span>
+      <div style="display:flex;gap:7px;align-items:center;">
+        <span id="supCount" style="font-size:.75rem;color:var(--brown3);"></span>
+        <button class="btn btn-green btn-sm" onclick="openBulkPriceUpdate('supplier')">📈 Update Prices</button>
+      </div>
+    </div>
     <div class="tbl-outer"><table>
       <thead><tr><th>#</th><th>Name</th><th>Farm/Area</th><th>Phone</th><th class="r">Rate/Kg (Rs)</th><th class="r">Daily Qty (Kg)</th><th class="r">Monthly Qty (Kg)</th><th class="r">Monthly Bill (Rs)</th><th>Terms</th><th>Status</th><th>Actions</th></tr></thead>
       <tbody id="supTbody"></tbody>
@@ -370,8 +383,15 @@ label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:
     </div>
   </div>
   <div class="notice">ℹ️ Click <b>View</b> on any customer to see their full monthly transactions & payment history.</div>
+  <div class="notice" style="background:#E8F5EE;border-color:var(--green3);">💡 To change prices from this month onwards — click <b>Update Prices</b>. Old months keep their original rates.</div>
   <div class="tbl-wrap">
-    <div class="tbl-bar"><span class="tbl-bar-title">All Customers</span><span id="custCount" style="font-size:.75rem;color:var(--brown3);"></span></div>
+    <div class="tbl-bar">
+      <span class="tbl-bar-title">All Customers</span>
+      <div style="display:flex;gap:7px;align-items:center;">
+        <span id="custCount" style="font-size:.75rem;color:var(--brown3);"></span>
+        <button class="btn btn-green btn-sm" onclick="openBulkPriceUpdate('customer')">📈 Update Prices</button>
+      </div>
+    </div>
     <div class="tbl-outer"><table>
       <thead><tr><th>#</th><th>Name</th><th>Address</th><th>Phone</th><th class="r">Rate/Kg (Rs)</th><th class="r">Daily Qty (Kg)</th><th class="r">Monthly Qty (Kg)</th><th class="r">Monthly Bill (Rs)</th><th>Terms</th><th>Status</th><th>Actions</th></tr></thead>
       <tbody id="custTbody"></tbody>
@@ -595,7 +615,43 @@ function getMD(key){
 function changeMonth(d){
   CM+=d; if(CM>11){CM=0;CY++;} if(CM<0){CM=11;CY--;}
   updateLabels();
-  renderAll(); // only renders active tab now
+  renderAll();
+}
+
+function openMonthPicker(){
+  // Build year options — 2020 to 2035
+  let yearOpts='', monthOpts='';
+  for(let y=2020;y<=2035;y++) yearOpts+=`<option value="${y}" ${y===CY?'selected':''}>${y}</option>`;
+  MN.forEach((m,i) => monthOpts+=`<option value="${i}" ${i===CM?'selected':''}>${m}</option>`);
+
+  document.getElementById('modalTitle').textContent = '📅 Jump to Month';
+  document.getElementById('modalBody').innerHTML=`
+    <div style="font-size:.82rem;color:var(--brown3);margin-bottom:14px;">Select any month and year to jump directly to it.</div>
+    <div class="form-grid">
+      <div class="fg"><label>Month</label>
+        <select class="fi" id="jp-month">${monthOpts}</select>
+      </div>
+      <div class="fg"><label>Year</label>
+        <select class="fi" id="jp-year">${yearOpts}</select>
+      </div>
+    </div>
+    <div style="margin-top:14px;background:var(--cream2);border-radius:9px;padding:10px 13px;font-size:.78rem;color:var(--brown3);">
+      💡 All your existing data for that month will load automatically.
+    </div>`;
+  document.getElementById('modalActions').innerHTML=`
+    <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    <button class="btn btn-caramel" onclick="jumpToMonth()">Go →</button>`;
+  openModal();
+}
+
+function jumpToMonth(){
+  const m = +document.getElementById('jp-month').value;
+  const y = +document.getElementById('jp-year').value;
+  CM=m; CY=y;
+  closeModal();
+  updateLabels();
+  renderAll();
+  toast(`📅 Jumped to ${ml(CY,CM)}`);
 }
 
 function updateLabels(){
@@ -734,6 +790,71 @@ function initSample() {
   md.purchases = [{ date: today(), supplier: 'Ahmad Dairy Farm', qty: 50, rate: 110, paid: false, notes: 'Sample entry' }];
   md.sales = [{ date: today(), customer: 'Khan Family', qty: 5, rate: 140, received: false, notes: 'Sample entry' }];
   md.expenses = [{ date: today(), cat: 'Fuel/Transport', desc: 'Bike fuel', amt: 500, paidBy: 'Cash', notes: '' }];
+}
+
+// ===================== BULK PRICE UPDATE =====================
+function openBulkPriceUpdate(type){
+  const isS=type==='supplier';
+  const list=isS?ST.suppliers:ST.customers;
+  const label=isS?'Supplier':'Customer';
+  const rows=list.map((e,i)=>`
+    <tr style="border-bottom:1px solid var(--border2);">
+      <td style="padding:6px 8px;font-weight:600;font-size:.82rem;">${e.name}</td>
+      <td style="padding:6px 8px;text-align:right;font-family:'DM Mono',monospace;color:var(--brown3);font-size:.82rem;">Rs ${fmt(e.rate)}</td>
+      <td style="padding:6px 4px;"><input type="number" id="pr-${i}" value="${e.rate}" min="0" step="0.5"
+        style="width:80px;text-align:right;border:1.5px solid var(--border);border-radius:6px;padding:4px 6px;font-size:.82rem;outline:none;"
+        oninput="showPrDiff(${i},${e.rate},+this.value)"></td>
+      <td style="padding:6px 4px;min-width:52px;"><span id="prd-${i}" style="font-size:.72rem;font-weight:700;"></span></td>
+    </tr>`).join('');
+
+  document.getElementById('modalTitle').innerHTML=`📈 Update ${label} Prices`;
+  document.getElementById('modalBody').innerHTML=`
+    <div style="background:#E8F5EE;border:1.5px solid var(--green3);border-radius:9px;padding:10px 13px;font-size:.78rem;color:var(--green);margin-bottom:12px;">
+      ✅ Only the <b>default rate</b> changes. All previous months keep their originally recorded rates — no old data touched.
+    </div>
+    <div style="font-size:.7rem;color:var(--brown3);margin-bottom:6px;display:grid;grid-template-columns:1fr 80px 80px 52px;gap:4px;font-weight:700;text-transform:uppercase;padding:0 8px;">
+      <span>${label}</span><span style="text-align:right">Old Rate</span><span style="text-align:right">New Rate</span><span>Diff</span>
+    </div>
+    <div style="max-height:320px;overflow-y:auto;border:1.5px solid var(--border2);border-radius:8px;margin-bottom:10px;">
+      <table style="width:100%;border-collapse:collapse;"><tbody>${rows}</tbody></table>
+    </div>`;
+  document.getElementById('modalActions').innerHTML=`
+    <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    <button class="btn btn-green" onclick="savePriceUpdate('${type}')">✅ Save New Prices</button>`;
+  openModal();
+}
+
+function showPrDiff(i,oldR,newR){
+  const el=document.getElementById('prd-'+i); if(!el) return;
+  const d=+(newR-oldR).toFixed(1);
+  if(d===0){el.textContent='';return;}
+  el.textContent=(d>0?'+':'')+d;
+  el.style.color=d>0?'var(--green)':'var(--red2)';
+}
+
+function bulkAdj(type,factor){
+  const list=type==='supplier'?ST.suppliers:ST.customers;
+  list.forEach((e,i)=>{
+    const inp=document.getElementById('pr-'+i); if(!inp) return;
+    const nv=factor===0?e.rate:Math.round(e.rate*factor*2)/2;
+    inp.value=nv; showPrDiff(i,e.rate,nv);
+  });
+}
+
+function savePriceUpdate(type){
+  const list=type==='supplier'?ST.suppliers:ST.customers;
+  let changed=0;
+  list.forEach((e,i)=>{
+    const inp=document.getElementById('pr-'+i); if(!inp) return;
+    const nv=+inp.value;
+    if(nv>0&&nv!==e.rate){e.rate=nv;changed++;}
+  });
+  closeModal();
+  if(changed>0){
+    toast(`✅ ${changed} price${changed>1?'s':''} updated! Old months not affected.`);
+    type==='supplier'?renderSuppliers():renderCustomers();
+    saveData();
+  } else { toast('No prices changed.'); }
 }
 
 // ===================== RENDER ALL =====================
