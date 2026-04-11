@@ -150,8 +150,11 @@ body{font-family:'Outfit',sans-serif;background:#F3F0EB;color:#1A2B1A;min-height
 .gi::-webkit-outer-spin-button,.gi::-webkit-inner-spin-button{-webkit-appearance:none}
 .gi:focus{background:rgba(27,94,59,.08);border-radius:3px}
 .tot-c{background:rgba(27,94,59,.06);font-weight:700;font-size:11px;text-align:center;padding:0 5px;color:var(--g1);min-width:50px}
-.day-t{background:var(--g0) !important;color:#fff !important;font-size:10px;font-weight:700;text-align:center;padding:0 2px}
-.tot-row td{background:rgba(27,94,59,.05) !important}
+.day-t{background:var(--g1) !important;color:#fff !important;font-size:11px;font-weight:700;text-align:center;padding:0 3px}
+.tot-row td{background:#0B3A22 !important;color:#fff !important}
+.tot-row .nc{background:#0B3A22 !important;color:#fff !important;font-weight:700;font-size:11px}
+.tot-row .day-t{background:#1B5E3B !important;color:#fff !important;font-size:12px;font-weight:700}
+.tot-row .tot-c{background:#1B5E3B !important;color:#fff !important;font-size:12px;font-weight:700}
 
 /* ── Ledger Table ── */
 .ltbl{width:100%;border-collapse:collapse;font-size:12.5px}
@@ -221,7 +224,7 @@ body{font-family:'Outfit',sans-serif;background:#F3F0EB;color:#1A2B1A;min-height
       <span class="hm-lbl" id="monthLbl">Apr 2025</span>
       <button class="hm-btn" onclick="nextMonth()">›</button>
     </div>
-    <button class="sync-btn" onclick="syncSheets(event)" title="Sync to Google Sheets">☁️</button>
+    <button class="sync-btn" onclick="syncSheets()" title="Sync to Google Sheets">☁️</button>
   </header>
 
   <div id="tabBar">
@@ -733,7 +736,7 @@ function renderSales() {
         '</tr></thead>' +
         '<tbody>' + rows + '</tbody>' +
         '<tfoot><tr class="tot-row">' +
-          '<td class="nc" style="font-weight:700;font-size:11px;background:rgba(27,94,59,.08);">TOTAL</td>' +
+          '<td class="nc" style="font-weight:700;font-size:12px;">TOTAL</td>' +
           totCells +
           '<td class="day-t" id="sgt-q">' + fmtQ(grandQ) + '</td>' +
           '<td class="day-t" id="sgt-a">' + fmtR(grandA) + '</td>' +
@@ -799,7 +802,7 @@ function renderPurchases() {
         '</tr></thead>' +
         '<tbody>' + rows + '</tbody>' +
         '<tfoot><tr class="tot-row">' +
-          '<td class="nc" style="font-weight:700;font-size:11px;background:rgba(27,94,59,.08);">TOTAL</td>' +
+          '<td class="nc" style="font-weight:700;font-size:12px;">TOTAL</td>' +
           totCells +
           '<td class="day-t" id="pgt-q">' + fmtQ(grandQ) + '</td>' +
           '<td class="day-t" id="pgt-a">' + fmtR(grandA) + '</td>' +
@@ -1247,7 +1250,8 @@ function renderReceivable() {
       '</td>' +
       '<td style="' + TD_C + '">' + statusBadge(balance) + '</td>' +
       '<td style="' + TD_C + 'white-space:nowrap;">' +
-        '<button onclick="showAddPay(\'receivable\',\'' + c.id + '\')" style="background:var(--grn);color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;margin-right:3px;">Receive</button>' +
+        '<button onclick="showAddPay(\'receivable\',\'' + c.id + '\')" style="background:var(--grn);color:#fff;border:none;border-radius:6px;padding:5px 9px;font-size:11px;font-weight:700;cursor:pointer;margin-right:3px;">Receive</button>' +
+        '<button onclick="showCustLedger(\'' + c.id + '\')" style="background:#fff8e1;color:#e65100;border:none;border-radius:6px;padding:5px 7px;font-size:11px;font-weight:600;cursor:pointer;margin-right:3px;">Ledger</button>' +
         '<button onclick="showBill(\'customer\',\'' + c.id + '\')" style="background:#e8f0fe;color:#1a56db;border:none;border-radius:6px;padding:5px 7px;font-size:12px;cursor:pointer;margin-right:3px;" title="Bill">🧾</button>' +
         '<button onclick="doWAQuick(\'customer\',\'' + c.id + '\')" style="background:#d4edda;color:#155724;border:none;border-radius:6px;padding:5px 7px;font-size:12px;cursor:pointer;" title="WhatsApp">📱</button>' +
       '</td>' +
@@ -1405,7 +1409,8 @@ function renderPayable() {
       '</td>' +
       '<td style="' + TD_C + '">' + statusBadge(balance) + '</td>' +
       '<td style="' + TD_C + 'white-space:nowrap;">' +
-        '<button onclick="showAddPay(\'payable\',\'' + s.id + '\')" style="background:var(--grn);color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;margin-right:3px;">Pay</button>' +
+        '<button onclick="showAddPay(\'payable\',\'' + s.id + '\')" style="background:var(--grn);color:#fff;border:none;border-radius:6px;padding:5px 9px;font-size:11px;font-weight:700;cursor:pointer;margin-right:3px;">Pay</button>' +
+        '<button onclick="showSuppLedger(\'' + s.id + '\')" style="background:#fff8e1;color:#e65100;border:none;border-radius:6px;padding:5px 7px;font-size:11px;font-weight:600;cursor:pointer;margin-right:3px;">Ledger</button>' +
         '<button onclick="showBill(\'supplier\',\'' + s.id + '\')" style="background:#e8f0fe;color:#1a56db;border:none;border-radius:6px;padding:5px 7px;font-size:12px;cursor:pointer;margin-right:3px;" title="Bill">🧾</button>' +
         '<button onclick="doWAQuick(\'supplier\',\'' + s.id + '\')" style="background:#d4edda;color:#155724;border:none;border-radius:6px;padding:5px 7px;font-size:12px;cursor:pointer;" title="WhatsApp">📱</button>' +
       '</td>' +
@@ -1812,7 +1817,7 @@ function renderSettings() {
       '<div class="fg"><label class="fl">Apps Script URL</label><input type="url" class="fi" id="sGsUrl" value="' + escHtml(state.settings.gsUrl || '') + '" placeholder="https://script.google.com/macros/s/.../exec"></div>' +
       '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
         '<button class="btn btn-p btn-sm" onclick="saveGsUrl()">Save URL</button>' +
-        '<button class="btn btn-o btn-sm" onclick="syncSheets(event)">☁️ Push to Cloud</button>' +
+        '<button class="btn btn-o btn-sm" onclick="syncSheets()">☁️ Push to Cloud</button>' +
         '<button class="btn btn-o btn-sm" style="border-color:var(--amb);color:var(--amb);" onclick="pullFromCloud(false)">⬇️ Pull from Cloud</button>' +
       '</div>' +
       '<div style="margin-top:12px;padding:10px 12px;background:#e8f5e9;border-radius:8px;font-size:11.5px;line-height:1.6;color:#1B5E3B;">' +
@@ -1854,90 +1859,6 @@ function changePin() {
 function saveGsUrl() {
   state.settings.gsUrl = eid('sGsUrl').value.trim();
   saveState(); alert('Google Sheets URL saved!');
-}
-
-function showGasCode() {
-  var code = "function doPost(e) {\n  try {\n    var data = JSON.parse(e.postData.contents);\n    var ss = SpreadsheetApp.getActiveSpreadsheet();\n    \n    // Write timestamp\n    var logSh = ss.getSheetByName('SyncLog') || ss.insertSheet('SyncLog');\n    logSh.appendRow([new Date(), data.timestamp || '']);\n    \n    // Write customers\n    writeSheet(ss, 'Customers', data.data.customers || []);\n    writeSheet(ss, 'Suppliers', data.data.suppliers || []);\n    writeSheet(ss, 'Expenses', data.data.expenses || []);\n    \n    return ContentService.createTextOutput(JSON.stringify({status:'ok'})).setMimeType(ContentService.MimeType.JSON);\n  } catch(err) {\n    return ContentService.createTextOutput(JSON.stringify({status:'error',msg:err.message})).setMimeType(ContentService.MimeType.JSON);\n  }\n}\n\nfunction writeSheet(ss, name, arr) {\n  if (!arr.length) return;\n  var sh = ss.getSheetByName(name) || ss.insertSheet(name);\n  sh.clearContents();\n  var keys = Object.keys(arr[0]);\n  sh.appendRow(keys);\n  arr.forEach(function(row) { sh.appendRow(keys.map(function(k) { return row[k] || ''; })); });\n}";
-  showModal('Sample Apps Script Code',
-    '<p style="font-size:12px;color:var(--muted);margin-bottom:10px;">Copy this code into your Google Apps Script project:</p>' +
-    '<textarea style="width:100%;height:220px;font-size:10px;font-family:monospace;border:1px solid var(--bdr);border-radius:8px;padding:10px;" readonly>' + code + '</textarea>' +
-    '<button class="btn btn-p btn-full mt10" onclick="navigator.clipboard.writeText(document.querySelector(\'textarea\').value).then(()=>alert(\'Copied!\'))">Copy Code</button>'
-  );
-}
-
-function showOB(type) {
-  var isRec = type === 'receivable';
-  var entities = isRec ? state.customers : state.suppliers;
-  if (!entities.length) { alert(isRec ? 'Add customers first.' : 'Add suppliers first.'); return; }
-  var fields = entities.slice().sort(function(a,b) { return a.name.localeCompare(b.name); }).map(function(e) {
-    var ob = isRec ? pn(state.openRecBal[e.id] || 0) : pn(state.openPayBal[e.id] || 0);
-    return '<div class="fg"><label class="fl">' + escHtml(e.name) + '</label><input type="number" inputmode="decimal" class="fi" id="ob-' + e.id + '" value="' + ob + '" placeholder="0"></div>';
-  }).join('');
-  showModal((isRec ? 'Receivable' : 'Payable') + ' Opening Balances',
-    '<p style="font-size:12px;color:var(--muted);margin-bottom:12px;">' +
-      (isRec ? 'Amounts owed TO you before starting this app.' : 'Amounts you owe TO suppliers before starting this app.') +
-    '</p>' + fields +
-    '<button class="btn btn-p btn-full mt10" onclick="saveOB(\'' + type + '\')">Save Balances</button>'
-  );
-}
-
-function saveOB(type) {
-  var isRec = type === 'receivable';
-  var entities = isRec ? state.customers : state.suppliers;
-  entities.forEach(function(e) {
-    var el = eid('ob-' + e.id);
-    if (el) {
-      if (isRec) state.openRecBal[e.id] = pn(el.value);
-      else state.openPayBal[e.id] = pn(el.value);
-    }
-  });
-  saveState(); closeModal(); alert('Opening balances saved!');
-}
-
-function exportJSON() {
-  var json = JSON.stringify(state, null, 2);
-  var blob = new Blob([json], { type: 'application/json' });
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url; a.download = 'badian-dairy-' + new Date().toISOString().slice(0, 10) + '.json';
-  a.click(); URL.revokeObjectURL(url);
-}
-
-function importJSON() {
-  var inp = document.createElement('input');
-  inp.type = 'file'; inp.accept = '.json';
-  inp.onchange = function(ev) {
-    var file = ev.target.files[0]; if (!file) return;
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      try {
-        var d = JSON.parse(e.target.result);
-        if (!d.customers || !d.suppliers) { alert('Invalid backup file.'); return; }
-        if (!confirm('Replace ALL current data with this backup?')) return;
-        state.customers = d.customers || [];
-        state.suppliers = d.suppliers || [];
-        state.sales = d.sales || {};
-        state.purchases = d.purchases || {};
-        state.expenses = d.expenses || [];
-        state.recPayments = d.recPayments || [];
-        state.payPayments = d.payPayments || [];
-        state.openRecBal = d.openRecBal || {};
-        state.openPayBal = d.openPayBal || {};
-        if (d.settings) state.settings = Object.assign(state.settings, d.settings);
-        saveState(); location.reload();
-      } catch(ex) { alert('Error reading file: ' + ex.message); }
-    };
-    reader.readAsText(file);
-  };
-  inp.click();
-}
-
-function resetAll() {
-  if (!confirm('⚠️ Delete ALL data? Cannot be undone.')) return;
-  var c = prompt('Type RESET to confirm:');
-  if (c !== 'RESET') return;
-  localStorage.removeItem(STORE_KEY);
-  location.reload();
 }
 
 // ════════════════════════════════════════════
