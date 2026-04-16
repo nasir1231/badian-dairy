@@ -144,17 +144,28 @@ body{font-family:'Outfit',sans-serif;background:#F3F0EB;color:#1A2B1A;min-height
 .reg-tbl{border-collapse:collapse;font-size:12.5px}
 .reg-tbl th,.reg-tbl td{border:1px solid var(--bdr);padding:0;height:30px}
 .reg-tbl th{background:var(--g0);color:#fff;font-size:10px;font-weight:700;text-align:center;padding:0 3px;white-space:nowrap;height:28px}
+/* ── Sticky header row stays visible on vertical scroll ── */
+.reg-tbl thead th{position:sticky;top:calc(var(--hh) + var(--tbh));z-index:4;background:var(--g0)}
+.reg-tbl thead th.nh{z-index:5}
+/* ── Sticky name column stays visible on horizontal scroll ── */
 .nc{position:sticky;left:0;background:var(--card);z-index:2;min-width:110px;max-width:130px;padding:0 7px;font-size:11.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-right:2px solid var(--bdr) !important}
-.nh{position:sticky;left:0;z-index:3;background:var(--g0) !important;min-width:110px}
+.nh{position:sticky;left:0;z-index:5 !important;background:var(--g0) !important;min-width:110px}
 .gi{width:46px;border:none;background:transparent;text-align:center;font-size:13px;font-family:'Outfit',sans-serif;padding:5px 1px;display:block;outline:none;color:var(--text);-moz-appearance:textfield}
 .gi::-webkit-outer-spin-button,.gi::-webkit-inner-spin-button{-webkit-appearance:none}
-.gi:focus{background:rgba(27,94,59,.08);border-radius:3px}
+.gi:focus{background:rgba(27,94,59,.12);border-radius:3px}
 .tot-c{background:rgba(27,94,59,.06);font-weight:700;font-size:11px;text-align:center;padding:0 5px;color:var(--g1);min-width:50px}
 .day-t{background:var(--g1) !important;color:#fff !important;font-size:11px;font-weight:700;text-align:center;padding:0 3px}
 .tot-row td{background:#0B3A22 !important;color:#fff !important}
 .tot-row .nc{background:#0B3A22 !important;color:#fff !important;font-weight:700;font-size:11px}
 .tot-row .day-t{background:#1B5E3B !important;color:#fff !important;font-size:12px;font-weight:700}
-.tot-row .tot-c{background:#1B5E3B !important;color:#fff !important;font-size:12px;font-weight:700}
+/* ── Row highlight ── */
+.reg-tbl tbody tr.row-hi .nc{background:#FFF8E1 !important;color:var(--text) !important}
+.reg-tbl tbody tr.row-hi td{background:#FFFDE7 !important}
+.reg-tbl tbody tr.row-hi .tot-c{background:#FFF9C4 !important;color:var(--g1) !important}
+/* ── Column highlight on header ── */
+.reg-tbl thead th.col-hi{background:#2E7D52 !important;color:#fff !important;outline:2px solid #FFF176;outline-offset:-2px}
+/* ── Active cell ── */
+.reg-tbl td.cell-hi{background:#E8F5E9 !important}
 
 /* ── Ledger Table ── */
 .ltbl{width:100%;border-collapse:collapse;font-size:12.5px}
@@ -680,6 +691,48 @@ function updatePurchTots(sid, day, m) {
 }
 
 // ════════════════════════════════════════════
+// REGISTER HIGHLIGHT — row + column on focus
+// Safe: uses event delegation, zero data touched
+// ════════════════════════════════════════════
+function attachRegHighlight(tableEl) {
+  if (!tableEl) return;
+
+  function clearAll() {
+    tableEl.querySelectorAll('tr.row-hi').forEach(function(r) { r.classList.remove('row-hi'); });
+    tableEl.querySelectorAll('th.col-hi').forEach(function(h) { h.classList.remove('col-hi'); });
+    tableEl.querySelectorAll('td.cell-hi').forEach(function(c) { c.classList.remove('cell-hi'); });
+  }
+
+  tableEl.addEventListener('focusin', function(ev) {
+    var inp = ev.target;
+    if (!inp || !inp.classList.contains('gi')) return;
+
+    clearAll();
+
+    // 1 — highlight the whole row
+    var row = inp.parentNode && inp.parentNode.parentNode; // input → td → tr
+    if (row && row.tagName === 'TR') row.classList.add('row-hi');
+
+    // 2 — highlight the column header and all cells in that column
+    var day = inp.dataset.day;
+    if (day) {
+      // highlight matching header th (find by text content matching the day number)
+      tableEl.querySelectorAll('thead th').forEach(function(th) {
+        if (th.textContent.trim() === String(day)) th.classList.add('col-hi');
+      });
+      // highlight the focused cell's td
+      var td = inp.parentNode;
+      if (td) td.classList.add('cell-hi');
+    }
+  });
+
+  tableEl.addEventListener('focusout', function(ev) {
+    // Small delay so highlight stays visible for a moment
+    setTimeout(clearAll, 120);
+  });
+}
+
+// ════════════════════════════════════════════
 // SALE REGISTER
 // ════════════════════════════════════════════
 function renderSales() {
@@ -728,7 +781,7 @@ function renderSales() {
   p.innerHTML =
     '<div style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:7px;">← Swipe table left to see all days →</div>' +
     '<div class="reg-wrap">' +
-      '<table class="reg-tbl">' +
+      '<table class="reg-tbl" id="saleTbl">' +
         '<thead><tr>' +
           '<th class="nh">Customer</th>' + thDays +
           '<th style="min-width:44px;">Qty</th>' +
@@ -743,6 +796,7 @@ function renderSales() {
         '</tr></tfoot>' +
       '</table>' +
     '</div>';
+  attachRegHighlight(eid('saleTbl'));
 }
 
 // ════════════════════════════════════════════
@@ -794,7 +848,7 @@ function renderPurchases() {
   p.innerHTML =
     '<div style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:7px;">← Swipe table left to see all days →</div>' +
     '<div class="reg-wrap">' +
-      '<table class="reg-tbl">' +
+      '<table class="reg-tbl" id="purchTbl">' +
         '<thead><tr>' +
           '<th class="nh">Supplier</th>' + thDays +
           '<th style="min-width:44px;">Qty</th>' +
@@ -809,6 +863,7 @@ function renderPurchases() {
         '</tr></tfoot>' +
       '</table>' +
     '</div>';
+  attachRegHighlight(eid('purchTbl'));
 }
 
 // ════════════════════════════════════════════
@@ -1648,47 +1703,43 @@ function showBill(type, entityId) {
 // PRINT
 // ════════════════════════════════════════════
 function doPrint(type, entityId) {
-  var month = eid('billMonth').value;
+  var month = eid('billMonth') ? eid('billMonth').value : selMonth;
   var bd = getBillData(type, entityId, month);
   if (!bd) return;
   var mn = mShort(month);
   var printDate = new Date().toLocaleDateString('en-PK', { day:'2-digit', month:'short', year:'numeric' });
 
   var tableRows = bd.entries.map(function(e, i) {
-    var bg = i % 2 === 0 ? '#fff' : '#f9fafb';
+    var bg = i % 2 === 0 ? '#fff' : '#f2f7f2';
     return '<tr style="background:' + bg + ';">' +
-      '<td style="padding:5px 10px;border-bottom:1px solid #eef0ee;font-size:12px;">' + e.day + ' ' + mn + '</td>' +
-      '<td style="padding:5px 10px;border-bottom:1px solid #eef0ee;text-align:center;font-size:12px;">' + fmtQ(e.qty) + '</td>' +
-      '<td style="padding:5px 10px;border-bottom:1px solid #eef0ee;text-align:center;font-size:12px;">Rs ' + bd.entity.rate + '</td>' +
-      '<td style="padding:5px 10px;border-bottom:1px solid #eef0ee;text-align:right;font-size:12px;font-weight:600;">Rs ' + Math.round(e.amt).toLocaleString('en-PK') + '</td>' +
+      '<td style="padding:5px 10px;border-bottom:1px solid #dde8dd;font-size:12px;">' + e.day + ' ' + mn + '</td>' +
+      '<td style="padding:5px 10px;border-bottom:1px solid #dde8dd;text-align:center;font-size:12px;">' + fmtQ(e.qty) + '</td>' +
+      '<td style="padding:5px 10px;border-bottom:1px solid #dde8dd;text-align:center;font-size:12px;">Rs ' + bd.entity.rate + '</td>' +
+      '<td style="padding:5px 10px;border-bottom:1px solid #dde8dd;text-align:right;font-size:12px;font-weight:600;">Rs ' + Math.round(e.amt).toLocaleString('en-PK') + '</td>' +
     '</tr>';
   }).join('');
 
   eid('printArea').innerHTML =
     '<style>' +
-      '@page { size: A4; margin: 14mm 14mm 14mm 14mm; }' +
-      'body { margin:0; }' +
-      '#billDoc { font-family: "Segoe UI", Arial, sans-serif; max-width: 540px; margin: 0 auto; color: #1a1a1a; font-size: 12px; }' +
+      '@page { size: A4; margin: 12mm; }' +
+      '* { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }' +
+      'body { margin:0; -webkit-print-color-adjust: exact; }' +
+      '#billDoc { font-family: Arial, sans-serif; max-width: 540px; margin: 0 auto; color: #1a1a1a; font-size: 12px; }' +
     '</style>' +
     '<div id="billDoc">' +
 
-      /* ── Header bar ── */
-      '<div style="background:#0B3A22;color:#fff;padding:14px 18px;border-radius:6px 6px 0 0;">' +
-        '<div style="font-size:17px;font-weight:700;letter-spacing:-.3px;">' + escHtml(state.settings.bizName) + '</div>' +
-        '<div style="font-size:11px;opacity:.75;margin-top:2px;">' + escHtml(state.settings.bizAddr) + '</div>' +
-        '<div style="font-size:12px;opacity:.85;margin-top:2px;letter-spacing:.3px;">0300 4411263</div>' +
+      '<div style="background:#0B3A22 !important;color:#fff !important;padding:14px 18px;border-radius:6px 6px 0 0;-webkit-print-color-adjust:exact;">' +
+        '<div style="font-size:17px;font-weight:700;">' + escHtml(state.settings.bizName) + '</div>' +
+        '<div style="font-size:11px;opacity:.8;margin-top:2px;">' + escHtml(state.settings.bizAddr) + '</div>' +
+        '<div style="font-size:12px;margin-top:2px;">0300 4411263</div>' +
       '</div>' +
 
-      /* ── Bill title strip ── */
-      '<div style="background:#1B5E3B;color:#fff;padding:7px 18px;display:flex;justify-content:space-between;align-items:center;">' +
-        '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;">' +
-          (bd.isCust ? 'Sale Bill' : 'Purchase Bill') +
-        '</div>' +
-        '<div style="font-size:11px;opacity:.85;">' + mLabel(month) + ' &nbsp;|&nbsp; Printed: ' + printDate + '</div>' +
+      '<div style="background:#1B5E3B !important;color:#fff !important;padding:7px 18px;display:flex;justify-content:space-between;align-items:center;-webkit-print-color-adjust:exact;">' +
+        '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;">' + (bd.isCust ? 'Sale Bill' : 'Purchase Bill') + '</div>' +
+        '<div style="font-size:11px;">' + mLabel(month) + ' | ' + printDate + '</div>' +
       '</div>' +
 
-      /* ── Party info ── */
-      '<div style="border:1px solid #dde8dd;border-top:none;padding:12px 18px;display:flex;justify-content:space-between;gap:16px;background:#fafcfa;">' +
+      '<div style="border:1px solid #dde8dd;border-top:none;padding:10px 18px;display:flex;justify-content:space-between;gap:16px;background:#fafcfa;">' +
         '<table style="font-size:12px;border-collapse:collapse;flex:1;">' +
           '<tr><td style="color:#666;padding:2px 10px 2px 0;white-space:nowrap;">' + (bd.isCust ? 'Customer' : 'Supplier') + '</td>' +
             '<td style="font-weight:700;padding:2px 0;">' + escHtml(bd.entity.name) + '</td></tr>' +
@@ -1701,36 +1752,30 @@ function doPrint(type, entityId) {
         '</table>' +
       '</div>' +
 
-      /* ── Transactions table ── */
       '<table style="width:100%;border-collapse:collapse;border:1px solid #dde8dd;border-top:none;">' +
-        '<thead>' +
-          '<tr style="background:#e8f0e8;">' +
-            '<th style="padding:7px 10px;text-align:left;font-size:10.5px;font-weight:700;color:#0B3A22;text-transform:uppercase;letter-spacing:.5px;border-bottom:1.5px solid #b8d0b8;">Date</th>' +
-            '<th style="padding:7px 10px;text-align:center;font-size:10.5px;font-weight:700;color:#0B3A22;text-transform:uppercase;letter-spacing:.5px;border-bottom:1.5px solid #b8d0b8;">Qty (Kg)</th>' +
-            '<th style="padding:7px 10px;text-align:center;font-size:10.5px;font-weight:700;color:#0B3A22;text-transform:uppercase;letter-spacing:.5px;border-bottom:1.5px solid #b8d0b8;">Rate</th>' +
-            '<th style="padding:7px 10px;text-align:right;font-size:10.5px;font-weight:700;color:#0B3A22;text-transform:uppercase;letter-spacing:.5px;border-bottom:1.5px solid #b8d0b8;">Amount</th>' +
-          '</tr>' +
-        '</thead>' +
+        '<thead><tr style="background:#e8f0e8 !important;-webkit-print-color-adjust:exact;">' +
+          '<th style="padding:7px 10px;text-align:left;font-size:10.5px;font-weight:700;color:#0B3A22;text-transform:uppercase;border-bottom:1.5px solid #b8d0b8;">Date</th>' +
+          '<th style="padding:7px 10px;text-align:center;font-size:10.5px;font-weight:700;color:#0B3A22;text-transform:uppercase;border-bottom:1.5px solid #b8d0b8;">Qty (Kg)</th>' +
+          '<th style="padding:7px 10px;text-align:center;font-size:10.5px;font-weight:700;color:#0B3A22;text-transform:uppercase;border-bottom:1.5px solid #b8d0b8;">Rate</th>' +
+          '<th style="padding:7px 10px;text-align:right;font-size:10.5px;font-weight:700;color:#0B3A22;text-transform:uppercase;border-bottom:1.5px solid #b8d0b8;">Amount</th>' +
+        '</tr></thead>' +
         '<tbody>' + (tableRows || '<tr><td colspan="4" style="text-align:center;padding:18px;color:#999;">No entries this month</td></tr>') + '</tbody>' +
-        '<tfoot>' +
-          '<tr style="background:#e8f0e8;">' +
-            '<td colspan="2" style="padding:7px 10px;font-weight:700;font-size:12px;color:#0B3A22;">Month Total</td>' +
-            '<td style="padding:7px 10px;text-align:center;font-weight:700;font-size:12px;color:#0B3A22;">' + fmtQ(bd.totalQty) + ' Kg</td>' +
-            '<td style="padding:7px 10px;text-align:right;font-weight:700;font-size:13px;color:#0B3A22;">Rs ' + Math.round(bd.totalAmt).toLocaleString('en-PK') + '</td>' +
-          '</tr>' +
-        '</tfoot>' +
+        '<tfoot><tr style="background:#e8f0e8 !important;-webkit-print-color-adjust:exact;">' +
+          '<td colspan="2" style="padding:7px 10px;font-weight:700;font-size:12px;color:#0B3A22;">Month Total</td>' +
+          '<td style="padding:7px 10px;text-align:center;font-weight:700;font-size:12px;color:#0B3A22;">' + fmtQ(bd.totalQty) + ' Kg</td>' +
+          '<td style="padding:7px 10px;text-align:right;font-weight:700;font-size:13px;color:#0B3A22;">Rs ' + Math.round(bd.totalAmt).toLocaleString('en-PK') + '</td>' +
+        '</tr></tfoot>' +
       '</table>' +
 
-      /* ── Balance summary ── */
       '<div style="border:1px solid #dde8dd;border-top:none;padding:12px 18px;background:#fff;">' +
         '<table style="width:100%;border-collapse:collapse;font-size:12px;">' +
           (bd.prevBal !== 0 ?
             '<tr><td style="padding:3px 0;color:#555;">Previous Balance</td>' +
             '<td style="padding:3px 0;text-align:right;font-weight:600;color:' + (bd.prevBal>0?'#C62828':'#2E7D32') + ';">Rs ' + Math.round(Math.abs(bd.prevBal)).toLocaleString('en-PK') + (bd.prevBal>0?' Dr':' Cr') + '</td></tr>' : '') +
-          '<tr><td style="padding:3px 0;color:#555;">This Month Sale</td>' +
+          '<tr><td style="padding:3px 0;color:#555;">' + (bd.isCust ? 'This Month Sale' : 'This Month Purchase') + '</td>' +
             '<td style="padding:3px 0;text-align:right;font-weight:600;">Rs ' + Math.round(bd.totalAmt).toLocaleString('en-PK') + '</td></tr>' +
           (bd.totalPays > 0 ?
-            '<tr><td style="padding:3px 0;color:#555;">Payments Received</td>' +
+            '<tr><td style="padding:3px 0;color:#555;">' + (bd.isCust ? 'Payments Received' : 'Payments Made') + '</td>' +
             '<td style="padding:3px 0;text-align:right;font-weight:600;color:#2E7D32;">(Rs ' + Math.round(bd.totalPays).toLocaleString('en-PK') + ')</td></tr>' : '') +
           '<tr><td colspan="2" style="padding:4px 0;"><div style="border-top:1.5px solid #0B3A22;margin:4px 0;"></div></td></tr>' +
           '<tr>' +
@@ -1740,8 +1785,7 @@ function doPrint(type, entityId) {
         '</table>' +
       '</div>' +
 
-      /* ── Footer ── */
-      '<div style="border:1px solid #dde8dd;border-top:none;border-radius:0 0 6px 6px;padding:9px 18px;background:#f5f8f5;display:flex;justify-content:space-between;align-items:center;">' +
+      '<div style="border:1px solid #dde8dd;border-top:none;border-radius:0 0 6px 6px;padding:9px 18px;background:#f5f8f5;display:flex;justify-content:space-between;">' +
         '<div style="font-size:10px;color:#888;">Thank you for your business</div>' +
         '<div style="font-size:10px;color:#888;">' + escHtml(state.settings.bizName) + '</div>' +
       '</div>' +
@@ -1755,7 +1799,7 @@ function doPrint(type, entityId) {
 // WHATSAPP
 // ════════════════════════════════════════════
 function doWA(type, entityId) {
-  var month = eid('billMonth').value;
+  var month = eid('billMonth') ? eid('billMonth').value : selMonth;
   var bd = getBillData(type, entityId, month);
   if (!bd) return;
   var mn = mShort(month);
@@ -1763,32 +1807,50 @@ function doWA(type, entityId) {
   var lines = [
     '*' + state.settings.bizName + '*',
     state.settings.bizAddr,
+    '📞 0300 4411263',
     '',
-    (bd.isCust ? 'Sale' : 'Purchase') + ' Bill — *' + mLabel(month) + '*',
+    (bd.isCust ? '🧾 Sale Bill' : '🧾 Purchase Bill') + ' — *' + mLabel(month) + '*',
+    '━━━━━━━━━━━━━━━━━━',
     '*' + bd.entity.name + '*',
-    bd.entity.phone ? 'Ph: ' + bd.entity.phone : null,
+    (bd.entity.phone ? '📱 ' + bd.entity.phone : null),
     'Rate: Rs ' + bd.entity.rate + '/Kg',
-    '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500'
+    '━━━━━━━━━━━━━━━━━━'
   ];
 
   bd.entries.forEach(function(e) {
-    lines.push(e.day + ' ' + mn + ': ' + fmtQ(e.qty) + ' Kg = Rs ' + Math.round(e.amt).toLocaleString('en-PK'));
+    lines.push(e.day + ' ' + mn + ':  ' + fmtQ(e.qty) + ' Kg  =  Rs ' + Math.round(e.amt).toLocaleString('en-PK'));
   });
 
-  lines.push('\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500');
-  lines.push('*Total: ' + fmtQ(bd.totalQty) + ' Kg = Rs ' + Math.round(bd.totalAmt).toLocaleString('en-PK') + '*');
-  if (bd.prevBal > 0) lines.push('Prev. Balance: Rs ' + Math.round(bd.prevBal).toLocaleString('en-PK'));
-  if (bd.totalPays > 0) lines.push('Payments: (Rs ' + Math.round(bd.totalPays).toLocaleString('en-PK') + ')');
-  lines.push('*Net Due: Rs ' + Math.round(bd.netDue).toLocaleString('en-PK') + '*');
+  lines.push('━━━━━━━━━━━━━━━━━━');
+  lines.push('*Total:  ' + fmtQ(bd.totalQty) + ' Kg  =  Rs ' + Math.round(bd.totalAmt).toLocaleString('en-PK') + '*');
+
+  if (bd.prevBal !== 0) {
+    lines.push('Prev. Balance:  Rs ' + Math.round(Math.abs(bd.prevBal)).toLocaleString('en-PK') + (bd.prevBal > 0 ? ' Dr' : ' Cr'));
+  }
+  if (bd.totalPays > 0) {
+    lines.push((bd.isCust ? 'Payment Received:' : 'Payment Made:') + '  Rs ' + Math.round(bd.totalPays).toLocaleString('en-PK'));
+  }
+
+  lines.push('━━━━━━━━━━━━━━━━━━');
+  lines.push('*Net Due:  Rs ' + Math.round(Math.abs(bd.netDue)).toLocaleString('en-PK') + (bd.netDue > 0 ? ' Dr' : bd.netDue < 0 ? ' Cr' : ' ✅ Clear') + '*');
   lines.push('');
-  lines.push('Generated: ' + new Date().toLocaleDateString('en-PK'));
+  lines.push('_' + new Date().toLocaleDateString('en-PK') + '_');
 
   var text = lines.filter(function(l) { return l !== null && l !== undefined; }).join('\n');
-  var phone = (bd.entity.phone || '').replace(/\D/g, '');
-  if (phone.startsWith('0')) phone = '92' + phone.slice(1);
-  if (!phone.startsWith('92')) phone = '92' + phone;
+  var rawPhone = (bd.entity.phone || '').replace(/\D/g, '');
 
-  window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(text), '_blank');
+  // Build wa.me URL — no phone = open WhatsApp without pre-filling number
+  var waUrl;
+  if (rawPhone.length >= 10) {
+    if (rawPhone.charAt(0) === '0') rawPhone = '92' + rawPhone.slice(1);
+    else if (rawPhone.slice(0,2) !== '92') rawPhone = '92' + rawPhone;
+    waUrl = 'https://wa.me/' + rawPhone + '?text=' + encodeURIComponent(text);
+  } else {
+    waUrl = 'https://wa.me/?text=' + encodeURIComponent(text);
+  }
+
+  // Use location.href for iPhone Safari — window.open() gets blocked
+  location.href = waUrl;
 }
 
 // ════════════════════════════════════════════
