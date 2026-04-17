@@ -161,10 +161,13 @@ body{font-family:'Outfit',sans-serif;background:#F3F0EB;color:#1A2B1A;min-height
 .reg-tbl tbody tr.row-hi .nc{background:#FFF8E1 !important;color:var(--text) !important}
 .reg-tbl tbody tr.row-hi td{background:#FFFDE7 !important}
 .reg-tbl tbody tr.row-hi .tot-c{background:#FFF9C4 !important;color:var(--g1) !important}
-/* ── Column highlight on header ── */
-.reg-tbl thead th.col-hi{background:#2E7D52 !important;color:#fff !important;outline:2px solid #FFF176;outline-offset:-2px}
-/* ── Active cell ── */
-.reg-tbl td.cell-hi{background:#E8F5E9 !important}
+/* ── Column highlight — header th ── */
+.reg-tbl thead th.col-hi{background:#2E7D52 !important;color:#fff !important;box-shadow:inset 0 -3px 0 #FFF176}
+/* ── Column highlight — body td cells ── */
+.reg-tbl tbody td.col-hi{background:#E3F2E3 !important}
+.reg-tbl tbody td.col-hi.tot-c{background:#C8E6C9 !important;color:var(--g1) !important}
+/* ── Active focused cell — brightest ── */
+.reg-tbl td.cell-hi{background:#A5D6A7 !important;box-shadow:inset 0 0 0 2px #2E7D52}
 
 /* ── Ledger Table ── */
 .ltbl{width:100%;border-collapse:collapse;font-size:12.5px}
@@ -690,44 +693,54 @@ function updatePurchTots(sid, day, m) {
 }
 
 // ════════════════════════════════════════════
-// REGISTER HIGHLIGHT — row + column on focus
-// Safe: uses event delegation, zero data touched
+// REGISTER HIGHLIGHT — row + full column on focus
 // ════════════════════════════════════════════
 function attachRegHighlight(tableEl) {
   if (!tableEl) return;
 
   function clearAll() {
-    tableEl.querySelectorAll('tr.row-hi').forEach(function(r) { r.classList.remove('row-hi'); });
-    tableEl.querySelectorAll('th.col-hi').forEach(function(h) { h.classList.remove('col-hi'); });
-    tableEl.querySelectorAll('td.cell-hi').forEach(function(c) { c.classList.remove('cell-hi'); });
+    tableEl.querySelectorAll('.row-hi').forEach(function(el) { el.classList.remove('row-hi'); });
+    tableEl.querySelectorAll('.col-hi').forEach(function(el) { el.classList.remove('col-hi'); });
+    tableEl.querySelectorAll('.cell-hi').forEach(function(el) { el.classList.remove('cell-hi'); });
   }
 
   tableEl.addEventListener('focusin', function(ev) {
     var inp = ev.target;
-    if (!inp || !inp.classList.contains('gi')) return;
+    if (!inp || !inp.classList.contains('gi')) { clearAll(); return; }
 
     clearAll();
 
-    // 1 — highlight the whole row
-    var row = inp.parentNode && inp.parentNode.parentNode; // input → td → tr
+    // Get the focused td and its column index
+    var td = inp.parentNode;
+    if (!td || td.tagName !== 'TD') return;
+    var colIdx = td.cellIndex;
+
+    // Highlight entire row
+    var row = td.parentNode;
     if (row && row.tagName === 'TR') row.classList.add('row-hi');
 
-    // 2 — highlight the column header and all cells in that column
-    var day = inp.dataset.day;
-    if (day) {
-      // highlight matching header th (find by text content matching the day number)
-      tableEl.querySelectorAll('thead th').forEach(function(th) {
-        if (th.textContent.trim() === String(day)) th.classList.add('col-hi');
-      });
-      // highlight the focused cell's td
-      var td = inp.parentNode;
-      if (td) td.classList.add('cell-hi');
+    // Highlight the focused cell specifically
+    td.classList.add('cell-hi');
+
+    // Highlight every cell in the same column across all body rows
+    var bodyRows = tableEl.querySelectorAll('tbody tr');
+    bodyRows.forEach(function(tr) {
+      var cell = tr.cells[colIdx];
+      if (cell) cell.classList.add('col-hi');
+    });
+
+    // Highlight matching header th at same column index
+    var headRow = tableEl.querySelector('thead tr');
+    if (headRow && headRow.cells[colIdx]) {
+      headRow.cells[colIdx].classList.add('col-hi');
     }
   });
 
   tableEl.addEventListener('focusout', function(ev) {
-    // Small delay so highlight stays visible for a moment
-    setTimeout(clearAll, 120);
+    // Only clear if focus is moving outside the table entirely
+    var next = ev.relatedTarget;
+    if (next && tableEl.contains(next)) return; // still inside table
+    clearAll();
   });
 }
 
